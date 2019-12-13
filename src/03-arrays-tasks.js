@@ -436,8 +436,67 @@ function toStringList(arr) {
  *      { country: 'Russia',  city: 'Saint Petersburg' }
  *    ]
  */
-function sortCitiesArray(/* arr */) {
-  throw new Error('Not implemented');
+function sortCitiesArray(arr) {
+  // function fieldSort(field) {
+  //   return (a, b) => {
+  //     if (typeof a === 'number') return a[field] < b[field];
+  //     return a[field] > b[field];
+  //   };
+  // }
+
+  // arr.sort(fieldSort('city'));
+  // arr.sort(fieldSort('country'));
+
+  arr.sort((a, b) => {
+    if (a.country < b.country) {
+      return -1;
+    }
+    if (a.country > b.country) {
+      return 1;
+    }
+    return a.city > b.city;
+  });
+
+
+  // arr.sort((a, b) => {
+  //   if (typeof a === 'number') {
+  //     if (a.country < b.country) {
+  //       return -1;
+  //     }
+
+  //     return 1;
+  //   }
+  //   const nameA = a.country.toUpperCase();
+  //   const nameB = b.country.toUpperCase();
+  //   if (nameA < nameB) {
+  //     return -1;
+  //   }
+
+  //   return 1;
+  // });
+  // arr.sort(
+  //   (a, b) => {
+  //     if (typeof a === 'number') {
+  //       if (a.country !== b.country) { return -1; }
+  //       if (typeof a === 'number') {
+  //         if (a.city < b.city) {
+  //           return -1;
+  //         }
+
+  //         return 1;
+  //       }
+  //     }
+  //     if (a.country !== b.country) { return -1; }
+  //     const nameA = a.city.toUpperCase();
+  //     const nameB = b.city.toUpperCase();
+  //     if (nameA < nameB) {
+  //       return -1;
+  //     }
+
+  //     return 1;
+  //   },
+  // );
+  return arr;
 }
 
 /**
