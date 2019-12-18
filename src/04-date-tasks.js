@@ -53,8 +53,18 @@ function parseDataFromIso8601(value) {
  *    Date(2012,1,1)    => true
  *    Date(2015,1,1)    => false
  */
-function isLeapYear(/* date */) {
-  throw new Error('Not implemented');
+function isLeapYear(date) {
+  const a = date.getFullYear();
+  if (a % 4 !== 0) {
+    return false;
+  }
+  if (a % 100 !== 0) {
+    return true;
+  }
+  if (a % 400 !== 0) {
+    return false;
+  }
+  return true;
 }
 
 
@@ -73,8 +83,23 @@ function isLeapYear(/* date */) {
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,10,0,0,250)     => "00:00:00.250"
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,15,20,10,453)   => "05:20:10.453"
  */
-function timeSpanToString(/* startDate, endDate */) {
-  throw new Error('Not implemented');
+function timeSpanToString(startDate, endDate) {
+  const date1 = endDate - startDate;
+  const msPerHour = 60 * 60 * 1000;
+  const msPerMin = 60 * 1000;
+  const msPerSec = 1000;
+  let temp = '';
+  const a = Math.floor(date1 / msPerHour);
+  const b = Math.floor((date1 % msPerHour) / msPerMin);
+  const c = Math.floor(((date1 % msPerHour) % msPerMin) / msPerSec);
+  const d = date1 - (a * msPerHour) - b * msPerMin - c * msPerSec;
+  // const e = `${Math.round(a)}:${Math.round(b)}:${Math.round(c)}.${Math.round(d)}`;
+  temp += ((a < 10) ? '0' : '') + a;
+  temp += ((b < 10) ? ':0' : ':') + b;
+  temp += ((c < 10) ? ':0' : ':') + c;
+  temp += d < 100 ? (((d < 10) ? '.00' : '.') + d) : (`.${d}`);
+  // temp += '.000';
+  return temp;
 }
 
 
@@ -92,8 +117,16 @@ function timeSpanToString(/* startDate, endDate */) {
  *    Date.UTC(2016,3,5,18, 0) => Math.PI
  *    Date.UTC(2016,3,5,21, 0) => Math.PI/2
  */
-function angleBetweenClockHands(/* date */) {
-  throw new Error('Not implemented');
+function angleBetweenClockHands(date) {
+  const hours = date.getUTCHours() > 12 ? date.getUTCHours() - 12 : date.getUTCHours();
+  const a = (Math.abs(0.5 * (60 * hours
+  + date.getUTCMinutes()) - 6 * date.getUTCMinutes())) * (Math.PI / 180);
+
+  if (a > Math.PI) {
+    return Math.PI * 2 - a;
+  }
+
+  return a;
 }
 
 
