@@ -66,7 +66,7 @@ function fromJSON(proto, json) {
 /**
  * Css selectors builder
  *
- * Each complex selector can consists of type, id, class, attribute, pseudo-class
+ * Each complex selector can consist of type, id, class, attribute, pseudo-class
  * and pseudo-element selectors:
  *
  *    element#id.class[attr]:pseudoClass::pseudoElement
@@ -118,32 +118,96 @@ function fromJSON(proto, json) {
  */
 
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
+
+  res: '',
+
+  copyThis() {
+    return { ...this };
   },
 
-  id(/* value */) {
-    throw new Error('Not implemented');
+  valueType(type) {
+    return `T${type}`;
   },
 
-  class(/* value */) {
-    throw new Error('Not implemented');
+  checkForDouble(type) {
+    if (Object.prototype.hasOwnProperty.call(this, this.valueType(type))) {
+      throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+    }
   },
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
+  checkOrder(type) {
+    const order = [
+      'element', 'id', 'class', 'attribute', 'pseudo-class', 'pseudo-element',
+    ];
+
+    const targetIndex = order.indexOf(type);
+
+    order.forEach((element, index) => {
+      if (Object.prototype.hasOwnProperty.call(this, this.valueType(element))) {
+        if (index > targetIndex) {
+          throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+        }
+      }
+    });
   },
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
+  addValue(type, value, needCheckForDouble) {
+    if (needCheckForDouble === true) {
+      this.checkForDouble(type);
+    }
+    this.checkOrder(type);
+    this[this.valueType(type)] = value;
   },
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
+  element(value) {
+    const copy = this.copyThis();
+    copy.addValue('element', value, true);
+    copy.res = `${copy.res}${value}`;
+    return copy;
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  id(value) {
+    const copy = this.copyThis();
+    copy.addValue('id', value, true);
+    copy.res = `${copy.res}#${value}`;
+    return copy;
+  },
+
+  class(value) {
+    const copy = this.copyThis();
+    copy.addValue('class', value);
+    copy.res = `${copy.res}.${value}`;
+    return copy;
+  },
+
+  attr(value) {
+    const copy = this.copyThis();
+    copy.addValue('attribute', value);
+    copy.res = `${copy.res}[${value}]`;
+    return copy;
+  },
+
+  pseudoClass(value) {
+    const copy = this.copyThis();
+    copy.addValue('pseudo-class', value);
+    copy.res = `${copy.res}:${value}`;
+    return copy;
+  },
+
+  pseudoElement(value) {
+    const copy = this.copyThis();
+    copy.addValue('pseudo-element', value, true);
+    copy.res = `${copy.res}::${value}`;
+    return copy;
+  },
+
+  combine(selector1, combinator, selector2) {
+    const copy = this.copyThis();
+    copy.res = `${selector1.res} ${combinator} ${selector2.res}`;
+    return copy;
+  },
+  stringify() {
+    return this.res;
   },
 };
 
