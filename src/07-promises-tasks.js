@@ -29,6 +29,12 @@
  *                                                    //  Ask her again.';
  */
 function willYouMarryMe(/* isPositiveAnswer */) {
+  // const promise = new Promise(((resolve, reject) => {
+  //   if (isPositiveAnswer) { () => resolve('Hooray!!! She said "Yes"!'); }
+  // else { () => resolve('Oh no, she said "No".'); }
+  //   reject(new Error('Error: Wrong parameter is passed! Ask her again.'));
+  //   return promise;
+  // }));
   throw new Error('Not implemented');
 }
 
